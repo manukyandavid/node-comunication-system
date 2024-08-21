@@ -18,3 +18,36 @@ export enum NetStatus {
     ipAddrR: number;
     ipPortNumR: number;
   }
+
+  export function narUpdateConsistencySC(nar: NAR): boolean {
+    if (
+      nar.recStatus === NetStatus.CHAIN_ADMIN &&
+      nar.recStatus === NetStatus.HUB &&
+      nar.recStatus === NetStatus.NODE &&
+      nar.recStatus === NetStatus.RELAY
+    ) {
+      return false;
+    }
+  
+    if (nar.recStatus === NetStatus.LEAVING || nar.amtCoinR <= 0) {
+      return false;
+    }
+  
+    if (nar.nodeNum !== nar.nodeNum1 && nar.nodeNum !== nar.nodeNum2) {
+      return false;
+    }
+  
+    if (
+      nar.recStatus === NetStatus.LISTENING ||
+      nar.recStatus === NetStatus.READY
+    ) {
+      if (
+        nar.acctNumRfdR === 256 ||
+        nar.ipAddrR === 64 ||
+        nar.ipPortNumR === 16
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
